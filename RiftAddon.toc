@@ -1,0 +1,30 @@
+Identifier = "ToonInfo"
+Name = "ToonInfo"
+NameShort = "TI"
+Description = {
+	English = "ToonInfo knows about your toons and their Inventory",
+}
+Author = "Wym"
+Website = "none"
+Version = "0.3beta"
+Email = "Wym@Brutwacht-EU"
+Environment = {"1.8"}
+RunOnStartup = {
+	"Translations.lua",
+	"main.lua",
+	"MoneyWindow.lua",
+	"FactionWindow.lua",
+	"TooltipExtension.lua",
+	"ToonInfoUI.lua",
+}
+SavedVariables = {
+	ToonInfoChar = 'character',
+	ToonInfoShard = 'shard',
+	ToonInfoGlobal = 'global',
+}
+Embed = {
+	LibSimpleWidgets = true,
+}
+Dependencies = {
+	LibSimpleWidgets = {"required", "before"},
+}
