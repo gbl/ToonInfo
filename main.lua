@@ -15,6 +15,8 @@ local function ensureVariablesInited()
 	if not ToonInfoChar then ToonInfoChar={} end	
 	if not ToonInfoShard then ToonInfoShard={} end
 	if not ToonInfoGlobal then ToonInfoGlobal={} end
+	if not ToonInfoGlobal["currencyicon"] then ToonInfoGlobal["currencyicon"]={} end
+	if not ToonInfoGlobal["currencyname"] then ToonInfoGlobal["currencyname"]={} end
 end
 
 local function itemChanged(updates)
@@ -31,6 +33,7 @@ local function itemChanged(updates)
 	if not ToonInfoShard[currentToon.name]["slots"] then
 		ToonInfoShard[currentToon.name]["slots"] = {}
 	end
+	ToonInfoShard[currentToon.name]["guild"]=false
 	if currentToon.guild then
 		if not ToonInfoShard[currentToon.guild] then
 			ToonInfoShard[currentToon.guild] = {}
@@ -41,6 +44,7 @@ local function itemChanged(updates)
 		if not ToonInfoShard[currentToon.guild]["slots"] then
 			ToonInfoShard[currentToon.guild]["slots"] = {}
 		end
+		ToonInfoShard[currentToon.guild]["guild"]=true
 	end
 	for k, v in pairs(updates) do
 		if k:sub(1, 2) == "sg" then

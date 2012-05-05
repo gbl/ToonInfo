@@ -8,35 +8,37 @@ local context
 
 local function buildItemResultWindow()
 	itemResultWindow=UI.CreateFrame("RiftWindow", "ToonInfo", context)
-	itemResultWindow:SetTitle(L("Found Items"))
 	itemResultWindow:SetPoint("CENTER", UIParent, "CENTER", 0,0)
+	itemResultWindow:SetController("content")
 	itemResultWindow:SetWidth(440)
+--	itemResultWindow:SetHeight(600)
+	itemResultWindow:SetTitle(L("Found Items"))
 	itemResultWindow:SetBackgroundColor(0, 0, 0, 1)
 
 	local closeButton = UI.CreateFrame("RiftButton", "ToonInfoCloseButton", itemResultWindow)
 	closeButton:SetSkin("close")
-	closeButton:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", -8, 15)
+	closeButton:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", 0, -40)
 	function closeButton.Event:LeftPress()
 		itemResultWindow:SetVisible(false)
 	end
 	
 	itemResultWindow.mask=UI.CreateFrame("Mask", "ToonInfoScrollMask", itemResultWindow)
-	itemResultWindow.mask:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 60)
+	itemResultWindow.mask:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
 	itemResultWindow.mask:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -20, -20)
 --	itemResultWindow.mask:SetBackgroundColor(0.5, 0, 0.5, 0.5)	
 
 	itemResultWindow.scrollView=UI.CreateFrame("Frame", "ToonInfoScrollview", itemResultWindow.mask)
-	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 60)
+	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
 	itemResultWindow.scrollView:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -40, -20)
 	
 	itemResultWindow.scrollbar = UI.CreateFrame("RiftScrollbar", "ToonInfoScrollbar", itemResultWindow)
 	itemResultWindow.scrollbar:SetOrientation("vertical")
-	itemResultWindow.scrollbar:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", -20, 60)
+	itemResultWindow.scrollbar:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", -20, 20)
 	itemResultWindow.scrollbar:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -20, -20)
 	itemResultWindow.scrollbar:SetVisible(true)
 	itemResultWindow.scrollbar.Event.ScrollbarChange = function()
 		local position=itemResultWindow.scrollbar:GetPosition()
-		itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 60-position)
+		itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20-position)
 	end
 
 	itemResultWindow:SetVisible(false)
@@ -44,7 +46,7 @@ local function buildItemResultWindow()
 end
 
 local function resetItemResultWindow()
-	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 60)
+	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
 	for toon, tw in pairs(itemResultWindow.toonWindow) do
 		tw.childcount=0
 		tw:SetHeight(0)

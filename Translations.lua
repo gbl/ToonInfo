@@ -10,6 +10,14 @@ local translationTable = {
 		["Currencies"]		   = "Währungen",
 		["Factions"]		   = "Fraktionen",
 		["Total"]		   = "Gesamt",
+		
+		hated			= "verhasst",
+		neutral			= "neutral",
+		friendly		= "verbündet",
+		decorated		= "dekoriert",
+		honored			= "geschätzt",
+		revered			= "verehrt",
+		glorified		= "verherrlicht",
 	}
 }
 
