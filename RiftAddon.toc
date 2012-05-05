@@ -2,11 +2,12 @@ Identifier = "ToonInfo"
 Name = "ToonInfo"
 NameShort = "TI"
 Description = {
-	English = "ToonInfo knows about your toons and their Inventory",
+	English = "ToonInfo knows about your toons, their inventory, money, and notoriety",
+	German = "ToonInfo verwaltet Ihre Charaktere und deren Beutel, Geld, und Ruf",
 }
 Author = "Wym"
 Website = "none"
-Version = "0.3beta"
+Version = "0.3"
 Email = "Wym@Brutwacht-EU"
 Environment = {"1.8"}
 RunOnStartup = {
@@ -22,9 +23,9 @@ SavedVariables = {
 	ToonInfoShard = 'shard',
 	ToonInfoGlobal = 'global',
 }
-Embed = {
-	LibSimpleWidgets = true,
-}
-Dependencies = {
-	LibSimpleWidgets = {"required", "before"},
-}
+--Embed = {
+--	LibSimpleWidgets = true,
+--}
+--Dependencies = {
+--	LibSimpleWidgets = {"required", "before"},
+--}
