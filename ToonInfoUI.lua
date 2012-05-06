@@ -279,8 +279,11 @@ function ToonInfo.GetMiniWindow()
 end
 
 function ToonInfo.GetMiniWindowLeft()
-	local l,r,t,b=miniWindow:GetBounds()
-	return l
+	return miniWindow:GetLeft()
+end
+
+function ToonInfo.GetMiniWindowTop()
+	return miniWindow:GetTop()
 end
 
 function ToonInfo.createUI()

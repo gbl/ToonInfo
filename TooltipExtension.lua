@@ -13,7 +13,7 @@ function ToonInfo.BuildTooltipExtension()
 	tooltipExtension.textTotal:SetPoint("BOTTOMLEFT", tooltipExtension, "BOTTOMLEFT", 2, -2)
 	tooltipExtension.textTotal:SetHeight(20)
 	tooltipExtension.textTotal:SetFontSize(18)
-	tooltipExtension.textTotal:SetWidth(110)
+	tooltipExtension.textTotal:SetWidth(130)
 	tooltipExtension.textTotal:SetBackgroundColor(0, 0, 0, 1)
 	tooltipExtension.textTotal:SetText(L("Total"))
 	
@@ -27,6 +27,7 @@ function ToonInfo.BuildTooltipExtension()
 	
 	tooltipExtension.nameList={}
 	tooltipExtension.countList={}
+	tooltipExtension.iconList={}
 	
 	-- dump(tooltipExtension:GetStrataList())
 end
@@ -62,23 +63,50 @@ function ToonInfo.showTooltipExtension(itemname)
 					count:SetFontSize(18)
 					count:SetWidth(38)
 					count:SetBackgroundColor(0, 0, 0, 1)
+
+					tooltipExtension.iconList[n]=UI.CreateFrame("Texture", "ExtensionTexture"..n, tooltipExtension);
+					icon=tooltipExtension.iconList[n]
+					icon:SetPoint("TOPRIGHT", count, "TOPLEFT", 0, 0)
+					icon:SetHeight(20)
+					icon:SetWidth(20)
+					icon:SetBackgroundColor(0, 0, 0, 1)
 				else
 					text=tooltipExtension.nameList[n]
 					count=tooltipExtension.countList[n]
+					icon=tooltipExtension.iconList[n]
 				end
+
+				if (slot:sub(1,4) == "sibg") or (slot:sub(1,4) == "sbbg") then
+					icon:SetTexture("ToonInfo", "box.png")
+				elseif (slot:sub(1,4) == "seqp") then
+					icon:SetTexture("ToonInfo", "user.png")	
+				elseif slot:sub(1,2) == "sw" then 
+					icon:SetTexture("ToonInfo", "wardrobe.png")
+				elseif slot:sub(1,2) == "si" then 
+					icon:SetTexture("ToonInfo", "backpack.png")
+				elseif (slot:sub(1,2) == "sb") or (slot:sub(1,2) == "sg") then 
+					icon:SetTexture("ToonInfo", "chest.png")
+				else
+					icon:SetTexture("ToonInfo", "qmark.png")
+				end
+				
 				text:SetText(toon)
 				count:SetText(""..(item.stack or "1"))
 				text:SetVisible(true)
 				count:SetVisible(true)
+				icon:SetVisible(true)
 				n=n+1
 				total=total + (item.stack or 1)
 			end
 		end
 	end
+	tooltipExtension:ClearAll()
+	tooltipExtension:SetWidth(170)
 	tooltipExtension:SetHeight(n*20+6)
 	while tooltipExtension.nameList[n] ~= nil do
 		tooltipExtension.nameList[n]:SetVisible(false)
 		tooltipExtension.countList[n]:SetVisible(false)
+		tooltipExtension.iconList[n]:SetVisible(false)
 		n=n+1
 	end
 	tooltipExtension.countTotal:SetText(""..total)
@@ -89,11 +117,15 @@ function ToonInfo.showTooltipExtension(itemname)
 -- so we show the additional tooltip next to the "Tooninfo" window hoping it won't
 -- get hidden there.
 	local l=ToonInfo.GetMiniWindowLeft()
-	if (l>500) then
-		tooltipExtension:ClearPoint("TOPLEFT");
+	local t=ToonInfo.GetMiniWindowTop()
+
+	if (l>500 and t>400) then
+		tooltipExtension:SetPoint("BOTTOMRIGHT", ToonInfo.GetMiniWindow(), "BOTTOMLEFT", -5, 0)
+	elseif (l>500 and t<=400) then
 		tooltipExtension:SetPoint("TOPRIGHT", ToonInfo.GetMiniWindow(), "TOPLEFT", -5, 0)
+	elseif (l<=500 and t>400) then
+		tooltipExtension:SetPoint("BOTTOMLEFT", ToonInfo.GetMiniWindow(), "BOTTOMRIGHT", -5, 0)
 	else
-		tooltipExtension:ClearPoint("TOPRIGHT");	
 		tooltipExtension:SetPoint("TOPLEFT", ToonInfo.GetMiniWindow(), "TOPRIGHT", 5, 0)
 	end
 	
