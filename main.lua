@@ -17,6 +17,9 @@ local function ensureVariablesInited()
 	if not ToonInfoGlobal then ToonInfoGlobal={} end
 	if not ToonInfoGlobal["currencyicon"] then ToonInfoGlobal["currencyicon"]={} end
 	if not ToonInfoGlobal["currencyname"] then ToonInfoGlobal["currencyname"]={} end
+	if not ToonInfoGlobal["currencycategory"] then ToonInfoGlobal["currencycategory"]={} end
+	if not ToonInfoGlobal["factionname"] then ToonInfoGlobal["factionname"]={} end
+	if not ToonInfoGlobal["factioncategory"] then ToonInfoGlobal["factioncategory"]={} end
 end
 
 local function itemChanged(updates)
@@ -27,9 +30,6 @@ local function itemChanged(updates)
 	if not ToonInfoShard[currentToon.name] then
 		ToonInfoShard[currentToon.name] = {}
 	end
-	if not ToonInfoGlobal[currentToon.name] then
-		ToonInfoGlobal[currentToon.name] = {}
-	end
 	if not ToonInfoShard[currentToon.name]["slots"] then
 		ToonInfoShard[currentToon.name]["slots"] = {}
 	end
@@ -37,9 +37,6 @@ local function itemChanged(updates)
 	if currentToon.guild then
 		if not ToonInfoShard[currentToon.guild] then
 			ToonInfoShard[currentToon.guild] = {}
-		end
-		if not ToonInfoGlobal[currentToon.guild] then
-			ToonInfoGlobal[currentToon.guild] = {}
 		end
 		if not ToonInfoShard[currentToon.guild]["slots"] then
 			ToonInfoShard[currentToon.guild]["slots"] = {}
@@ -143,6 +140,15 @@ function ToonInfo.printCoin()
 	end
 end
 
+function ToonInfo.deleteCharInfo(name)
+	if name == currentToon.name then
+		print("cannot delete information about yourself")
+		return
+	end
+	ToonInfoShard[name]=nil
+	ToonInfo.rebuildAllWindows()
+end
+
 function ToonInfo.SlashHandler(args)
 	local r = {}
 	local numargs = 0
@@ -153,16 +159,15 @@ function ToonInfo.SlashHandler(args)
 	if numargs>0 then
 		if r[0] == "version" then
 			ToonInfo.printVersion()
-		end
-		if r[0] == "coin" then
+		elseif r[0] == "delete" and numargs>1 then
+			ToonInfo.deleteCharInfo(r[1])
+		elseif r[0] == "coin" then
 			ToonInfo.printCoin()
-		end
-		if r[0] == "factions" then
+		elseif r[0] == "factions" then
 			ToonInfo.printFactions()
 		end
 	end
 end
-
 
 local function addonLoaded(addon) 
 	if (addon == "ToonInfo") then

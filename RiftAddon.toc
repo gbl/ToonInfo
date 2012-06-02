@@ -7,7 +7,7 @@ Description = {
 }
 Author = "Wym"
 Website = "none"
-Version = "0.31"
+Version = "0.33"
 Email = "Wym@Brutwacht-EU"
 Environment = {"1.8"}
 RunOnStartup = {
@@ -17,15 +17,10 @@ RunOnStartup = {
 	"FactionWindow.lua",
 	"TooltipExtension.lua",
 	"ToonInfoUI.lua",
+	"ScrollableRiftWindow.lua",
 }
 SavedVariables = {
 	ToonInfoChar = 'character',
 	ToonInfoShard = 'shard',
 	ToonInfoGlobal = 'global',
 }
---Embed = {
---	LibSimpleWidgets = true,
---}
---Dependencies = {
---	LibSimpleWidgets = {"required", "before"},
---}

@@ -3,7 +3,7 @@ local function L(x) return Translations.ToonInfo.L(x) end
 local tooltipExtension
 local lastTimeFrame=0
 
-function ToonInfo.BuildTooltipExtension()
+function ToonInfo.BuildTooltipExtension(context)
 	tooltipExtension=UI.CreateFrame("Frame", "TooltipExtension", context)
 	tooltipExtension:SetWidth(150)
 	tooltipExtension:SetHeight(50)

@@ -294,6 +294,15 @@ function ToonInfo.createUI()
 		if not ToonInfoChar.xpos then ToonInfoChar.xpos=100 end
 		if not ToonInfoChar.ypos then ToonInfoChar.ypos=100 end
 		ToonInfo.BuildMiniWindow()
-		ToonInfo.BuildTooltipExtension()
+		ToonInfo.BuildTooltipExtension(context)
 	end
+end
+
+function ToonInfo.rebuildAllWindows()
+		if (itemResultWindow) then
+			itemResultWindow:SetVisible(false)
+			itemResultWindow = nil
+		end
+		ToonInfo.forgetMoneyWindow()
+		ToonInfo.forgetFactionWindow()
 end
