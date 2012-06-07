@@ -7,46 +7,13 @@ local itemResultWindow
 local context
 
 local function buildItemResultWindow()
-	itemResultWindow=UI.CreateFrame("RiftWindow", "ToonInfo", context)
-	itemResultWindow:SetPoint("CENTER", UIParent, "CENTER", 0,0)
-	itemResultWindow:SetController("content")
-	itemResultWindow:SetWidth(440)
---	itemResultWindow:SetHeight(600)
-	itemResultWindow:SetTitle(L("Found Items"))
-	itemResultWindow:SetBackgroundColor(0, 0, 0, 1)
-
-	local closeButton = UI.CreateFrame("RiftButton", "ToonInfoCloseButton", itemResultWindow)
-	closeButton:SetSkin("close")
-	closeButton:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", 0, -40)
-	function closeButton.Event:LeftPress()
-		itemResultWindow:SetVisible(false)
-	end
-	
-	itemResultWindow.mask=UI.CreateFrame("Mask", "ToonInfoScrollMask", itemResultWindow)
-	itemResultWindow.mask:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
-	itemResultWindow.mask:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -20, -20)
---	itemResultWindow.mask:SetBackgroundColor(0.5, 0, 0.5, 0.5)	
-
-	itemResultWindow.scrollView=UI.CreateFrame("Frame", "ToonInfoScrollview", itemResultWindow.mask)
-	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
-	itemResultWindow.scrollView:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -40, -20)
-	
-	itemResultWindow.scrollbar = UI.CreateFrame("RiftScrollbar", "ToonInfoScrollbar", itemResultWindow)
-	itemResultWindow.scrollbar:SetOrientation("vertical")
-	itemResultWindow.scrollbar:SetPoint("TOPRIGHT", itemResultWindow, "TOPRIGHT", -20, 20)
-	itemResultWindow.scrollbar:SetPoint("BOTTOMRIGHT", itemResultWindow, "BOTTOMRIGHT", -20, -20)
-	itemResultWindow.scrollbar:SetVisible(true)
-	itemResultWindow.scrollbar.Event.ScrollbarChange = function()
-		local position=itemResultWindow.scrollbar:GetPosition()
-		itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20-position)
-	end
-
-	itemResultWindow:SetVisible(false)
+	itemResultWindow=ToonInfo.CreateScrollableRiftWindow("ToonInfo", L("Found Items"), context)
+	itemResultWindow:SetWidth(600)
 	itemResultWindow.toonWindow = {}
 end
 
 local function resetItemResultWindow()
-	itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
+	-- itemResultWindow.scrollView:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 20, 20)
 	for toon, tw in pairs(itemResultWindow.toonWindow) do
 		tw.childcount=0
 		tw:SetHeight(0)
@@ -56,38 +23,82 @@ local function resetItemResultWindow()
 			fr:SetVisible(false)
 		end
 	end
-	itemResultWindow.neededHeight=0
+end
+
+function ToonInfo.BagNameforPlace(placename)
+	local slot=placename:sub(1, 4)
+	if (slot == "sibg") or (slot == "sbbg") then
+		return "box"
+	elseif (slot == "seqp") then
+		return "user"
+	end
+	
+	slot=slot:sub(1,2)
+	if slot == "sw" then 
+		return "wardrobe"
+	elseif slot == "si" then 
+		return "backpack"
+	elseif (slot == "sb") or (slot == "sg") then 
+		return "chest"
+	end
+	
+	return "qmark"
 end
 
 local function addItemResultWindow(toon, slot, item)
 	local tw
 	local fr
 	local count
+	local bagtype = ToonInfo.BagNameforPlace(slot)
+
 	if not itemResultWindow.toonWindow[toon] then
-		itemResultWindow.toonWindow[toon] = UI.CreateFrame("Frame", "ToonInfo", itemResultWindow.scrollView)
+		itemResultWindow.toonWindow[toon] = UI.CreateFrame("Frame", "ToonInfo", itemResultWindow)
 		if not itemResultWindow.bottomToonWindow then
-			itemResultWindow.toonWindow[toon]:SetPoint("TOPLEFT", itemResultWindow.scrollView, "TOPLEFT", 0, 0)
+			itemResultWindow.toonWindow[toon]:SetPoint("TOPLEFT", itemResultWindow, "TOPLEFT", 0, 0)
 		else
 			itemResultWindow.toonWindow[toon]:SetPoint("TOPLEFT", itemResultWindow.bottomToonWindow, "BOTTOMLEFT", 0, 0)
 		end
 		tw=itemResultWindow.toonWindow[toon]
-		tw:SetWidth(400);
+		tw:SetWidth(600);
 		tw.name = UI.CreateFrame("Text", "text", itemResultWindow.toonWindow[toon])
+		tw.name:SetBackgroundColor(0.5, 0.5, 0.8, 1)
 		tw.name:SetText(toon)
 		tw.name:SetPoint("TOPLEFT", tw, "TOPLEFT", 2, 2)
-		tw.name:SetWidth(100);
+		tw.name:SetWidth(600);
 		tw.name:SetFontSize(20)
 		tw.childcount=0
 		tw.children={}
+		itemResultWindow.bottomToonWindow=tw
 	else
 		tw=itemResultWindow.toonWindow[toon]
 	end
-	itemResultWindow.bottomToonWindow=tw
+	
+	local mergestring
+	if not ToonInfoChar.merge then ToonInfoChar.merge = 0; end
+	if ToonInfoChar.merge <= 1 then
+		mergestring = bagtype .. ":" .. item.name
+	elseif ToonInfoChar.merge == 2 then
+		mergestring = item.name
+	end
+	
 	count=tw.childcount
+	if ToonInfoChar.merge > 0 then
+		for i = 1, count, 1 do
+			if tw.children[i].mergestring == mergestring then
+				tw.children[i].mergecount = tw.children[i].mergecount + (item.stack or 1)
+				tw.children[i].mergenum = tw.children[i].mergenum + 1
+				tw.children[i].count:SetText(tw.children[i].mergenum .. "/" .. tw.children[i].mergecount)
+				if ToonInfoChar.merge >= 2 then
+					tw.children[i].bag:SetTexture("ToonInfo", "merge.png")
+				end
+				return
+			end
+		end
+	end
+	
 	if not tw.children[count+1] then
 		fr=UI.CreateFrame("Frame", "ToonInfo", tw)
-		fr:SetPoint("TOPLEFT", tw, "TOPLEFT", 100, count*32)
-		fr:SetWidth(300)
+		fr:SetWidth(600)
 		fr:SetHeight(32)
 		tw.children[count+1]=fr
 		
@@ -99,56 +110,69 @@ local function addItemResultWindow(toon, slot, item)
 		fr.icon:SetWidth(32)
 		fr.icon:SetHeight(32)
 		fr.icon:SetPoint("TOPLEFT", fr, "TOPLEFT", 32, 0)
-		fr.label = UI.CreateFrame("Text", "text", fr)
-		fr.label:SetWidth(160)
-		fr.label:SetPoint("TOPLEFT", fr, "TOPLEFT", 80, 0)
 		fr.count = UI.CreateFrame("Text", "text", fr)
-		fr.icon:SetWidth(32)		
-		fr.count:SetPoint("TOPLEFT", fr, "TOPLEFT", 240, 0)
---		fr.count:SetBackgroundColor(0, 0.5, 0.5, 0.5)
+		fr.count:SetWidth(56)		
+		fr.count:SetPoint("TOPLEFT", fr, "TOPLEFT", 64, 0)
 		fr.count:SetFontSize(20)
+		fr.label = UI.CreateFrame("Text", "text", fr)
+		fr.label:SetWidth(480)
+		fr.label:SetPoint("TOPLEFT", fr, "TOPLEFT", 120, 0)
 	else
 		fr=tw.children[count+1]
 	end
 	str=item.name
-	if item.flavor then str=str .. "\n" .. item.flavor end
+	if item.flavor then str=str .. " - " .. item.flavor end
 	if item.description then str=str .. "\n" .. item.description end
 	fr.label:SetText(str)
 	fr.icon:SetTexture("Rift", item.icon)
-	if (slot:sub(1,4) == "sibg") or (slot:sub(1,4) == "sbbg") then
-		fr.bag:SetTexture("ToonInfo", "box.png")
-	elseif (slot:sub(1,4) == "seqp") then
-		fr.bag:SetTexture("ToonInfo", "user.png")	
-	elseif slot:sub(1,2) == "sw" then 
-		fr.bag:SetTexture("ToonInfo", "wardrobe.png")
-	elseif slot:sub(1,2) == "si" then 
-		fr.bag:SetTexture("ToonInfo", "backpack.png")
-	elseif (slot:sub(1,2) == "sb") or (slot:sub(1,2) == "sg") then 
-		fr.bag:SetTexture("ToonInfo", "chest.png")
-	else
-		fr.bag:SetTexture("ToonInfo", "qmark.png")
-	end
+	fr.bag:SetTexture("ToonInfo", bagtype .. ".png")
 	if item.stack then
 		fr.count:SetText("" .. item.stack)
 	else
 		fr.count:SetText("")
 	end
+	fr.mergestring = mergestring
+	fr.mergecount = (item.stack or 1)
+	fr.mergenum = 1
+	
 	fr:SetVisible(true)
 	tw.childcount = count+1
-	tw:SetHeight(tw.childcount*32)
+	tw:SetHeight((tw.childcount+1)*32)
 	tw:SetVisible(true)
-	itemResultWindow.neededHeight=itemResultWindow.neededHeight+32
+end
+
+local function sortSearchResults(toon)
+	local i, w
+	
+	if not itemResultWindow.toonWindow[toon] then return end
+	local tw=itemResultWindow.toonWindow[toon]
+	if tw.childcount==0 then return end
+	
+	-- print(toon .. ": hat "..table.getn(tw.children).." Einträge, davon "..tw.childcount.."benutzt.")
+
+	if table.getn(tw.children) > tw.childcount then
+		for i=tw.childcount+1, table.getn(tw.children) do
+			-- print("i="..i)
+			tw.children[i].mergestring='~~~'
+		end
+	end
+	table.sort(tw.children,
+		function(a, b) return a.mergestring < b.mergestring end
+	)
+	local nused=0
+	for i, w in ipairs(tw.children) do
+		-- print ("Zeile "..i.."hat Mergestring "..w.mergestring)
+		w:SetPoint("TOPLEFT", tw, "TOPLEFT", 0, i*32)
+	end
 end
 
 local function showItemResultWindow()
-
-	if (itemResultWindow.neededHeight <= itemResultWindow.scrollView:GetHeight()) then
-		itemResultWindow.scrollbar:SetVisible(false)
-	else
-		itemResultWindow.scrollbar:SetVisible(true)
-		itemResultWindow.scrollbar:SetRange(0, itemResultWindow.neededHeight - itemResultWindow.scrollView:GetHeight())
-		itemResultWindow.scrollbar:SetPosition(0)
+	local neededHeight=0
+	local i,w
+	for i, w in pairs(itemResultWindow.toonWindow) do
+		neededHeight=neededHeight+w:GetHeight()
 	end
+	itemResultWindow:SetHeight(neededHeight)
 	itemResultWindow:SetVisible(true)
 end
 
@@ -175,6 +199,7 @@ local function findItems(filter)
 				addItemResultWindow(toon, slot, item)
 			end
 		end
+		sortSearchResults(toon)
 	end
 	showItemResultWindow()
 end

@@ -142,7 +142,7 @@ end
 
 function ToonInfo.deleteCharInfo(name)
 	if name == currentToon.name then
-		print("cannot delete information about yourself")
+		print (L("cannot delete information about yourself"))
 		return
 	end
 	ToonInfoShard[name]=nil
@@ -159,8 +159,20 @@ function ToonInfo.SlashHandler(args)
 	if numargs>0 then
 		if r[0] == "version" then
 			ToonInfo.printVersion()
-		elseif r[0] == "delete" and numargs>1 then
-			ToonInfo.deleteCharInfo(r[1])
+		elseif (r[0] == "delete" or r[0] == "lösche") and numargs>1 then
+			if ToonInfoShard[name] then
+				ToonInfo.deleteCharInfo(r[1])
+			else
+				print (L("can't find Toon "..r[1]))
+			end
+		elseif (r[0] == "merge" or r[0] == "verschmelzen") and numargs > 1 then
+			ToonInfoChar.merge=tonumber(r[1])
+			print (L("merge mode set to ")..ToonInfoChar.merge)
+		elseif r[0] == "tooltipattach" then
+			ToonInfoChar.attachToTooltip=(r[1] == "true")
+			print (L("attach to tooltip set to ") .. (ToonInfoChar.attachToTooltip and "true" or "false"))
+		elseif r[0] == "attachposition" then
+			ToonInfoChar.attachPosition = r[1]
 		elseif r[0] == "coin" then
 			ToonInfo.printCoin()
 		elseif r[0] == "factions" then
@@ -181,12 +193,12 @@ local function tooltipShown(type, shown, buff)
 	local item
 	if (type == "item" or type == "itemtype") then
 		item=Inspect.Item.Detail(shown);
---		print("Tooltip: type "..(type or "nil")..", shown "..(shown or "nil") .. ", name "..(item.name or "nil"))
+		-- print("Tooltip: type "..(type or "nil")..", shown "..(shown or "nil") .. ", name "..(item.name or "nil"))
 		if item then
 			ToonInfo.showTooltipExtension(item.name)
 		end
 	else
---		print("Tooltip: type "..(type or "nil")..", shown "..(shown or "nil"))
+		-- print("Tooltip: type "..(type or "nil")..", shown "..(shown or "nil"))
 		ToonInfo.hideTooltipExtension()
 	end
 end

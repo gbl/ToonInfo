@@ -18,6 +18,11 @@ local translationTable = {
 		honored			= "geschätzt",
 		revered			= "verehrt",
 		glorified		= "verherrlicht",
+		
+		["can't find Toon "]	= "Kann Charakter nicht finden: ",
+		["cannot delete information about yourself"] =
+			"Kann Infomation über sich selbst nicht löschen",
+		["merge mode set to "]	= "Verschmelzmodus ist nun ",
 	}
 }
 
