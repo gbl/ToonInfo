@@ -116,8 +116,8 @@ function ToonInfo.showTooltipExtension(itemname)
 					presentmap[mergestring]=n
 					tooltipExtension.nitems[n]=(item.stack or 1)
 					n=n+1
-					total=total + (item.stack or 1)
 				end -- not already present
+				total=total + (item.stack or 1)
 			end -- item matches
 		end -- slot loop
 	end -- toon loop

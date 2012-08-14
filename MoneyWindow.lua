@@ -81,7 +81,7 @@ function ToonInfo.BuildMoneyWindow(context)
 	lastcatname=""
 	for i,id in ipairs(idlist) do
 		if ToonInfoGlobal["currencycategory"][id] ~= lastcatname then
-			lastcatname=ToonInfoGlobal["currencycategory"][id]
+			lastcatname=(ToonInfoGlobal["currencycategory"][id] or "???")
 			row=UI.CreateFrame("Text", "MoneyHeader"..lastcatname, moneyWindow)
 			row:SetPoint("TOPLEFT", moneyWindow, "TOPLEFT", 0, 10+m*30)
 			row:SetHeight(30)
@@ -146,7 +146,7 @@ function ToonInfo.BuildMoneyWindow(context)
 end
 
 function ToonInfo.UpdateMoneyWindow(toon, currency, value)
-	if moneyWindow then
+	if moneyWindow and moneyWindow.currencyrows[currency] and moneyWindow.currencyrows[currency].toons[toon] then
 		moneyWindow.currencyrows[currency].toons[toon]:SetText(formatcurrency(currency, value))
 		moneyWindow.currencyrows[currency].toons[toon]:SetBackgroundColor(0.3, 0.3, 0, 1)
 	end

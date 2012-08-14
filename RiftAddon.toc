@@ -4,12 +4,13 @@ NameShort = "TI"
 Description = {
 	English = "ToonInfo knows about your toons, their inventory, money, and notoriety",
 	German = "ToonInfo verwaltet Ihre Charaktere und deren Beutel, Geld, und Ruf",
+	French = "ToonInfo connait vos personnages, leur inventaire, fortune, et notoriété",
 }
 Author = "Wym"
 Website = "none"
-Version = "0.34"
+Version = "0.4"
 Email = "Wym@Brutwacht-EU"
-Environment = {"1.8"}
+Environment = {"1.9"}
 RunOnStartup = {
 	"Translations.lua",
 	"main.lua",

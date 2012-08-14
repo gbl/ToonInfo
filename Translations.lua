@@ -23,7 +23,44 @@ local translationTable = {
 		["cannot delete information about yourself"] =
 			"Kann Infomation über sich selbst nicht löschen",
 		["merge mode set to "]	= "Verschmelzmodus ist nun ",
-	}
+	},
+	-- french version thanks to Leetah
+	["French"] = {
+		["ToonInfo"]		   = "ToonInfo",
+		["ToonInfo Version "]	   = "ToonInfo Version ",
+		[" installed!"] 	   = " installé!",
+		["Found Items"]		   = "Objets Trouvés",
+		["Currencies"]		   = "Fortune",
+		["Factions"]		   = "Notoriété",
+		["Total"]		   = "Total",
+		
+		hated			= "haï",
+		neutral			= "neutre",
+		friendly		= "amical",
+		decorated		= "décoré",
+		honored			= "honoré",
+		revered			= "révéré",
+		glorified		= "glorifié",
+		
+		["can't find Toon "]	= "Impossible de trouver Toon: ",
+		["cannot delete information about yourself"] =
+			"Impossible de supprimer des informations vous concernant",
+		["merge mode set to "]	= "type de fusion réglé sur ",
+	},
+	-- russian version thanks to Aybolitus (incomplete, copied from Heartometer)
+	["Russian"] = {
+		["ToonInfo"]         	= "ToonInfo",
+		["ToonInfo Version "]	= "Версия ToonInfo ",
+		[" installed!"]         = " установлена!",
+
+		hated           	= "Ненависть",
+		neutral           	= "Нейтралитет",
+		friendly       		= "Приятельство",
+		decorated       	= "Дружба",
+		honored           	= "Уважение",
+		revered           	= "Почтение",
+		glorified       	= "Превознесение",
+	},
 }
 
 function Translations.ToonInfo.L(x)
